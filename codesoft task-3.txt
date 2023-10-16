@@ -1,0 +1,103 @@
+import java.util.ArrayList;
+import java.util.List;
+
+class Course {
+    String code;
+    String title;
+    String description;
+    int capacity;
+    String schedule;
+    List<Student> registeredStudents;  
+
+    Course(String code, String title, String description, int capacity, String schedule) {
+        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.capacity = capacity;
+        this.schedule = schedule;
+        this.registeredStudents = new ArrayList<>(); 
+    }
+}
+
+class Student {
+    int studentID;
+    String name;
+    List<Course> registeredCourses;  
+
+    Student(int studentID, String name) {
+        this.studentID = studentID;
+        this.name = name;
+        this.registeredCourses = new ArrayList<>();  
+    }
+}
+
+class CourseManager {
+    List<Course> courses;
+
+    CourseManager() {
+        this.courses = new ArrayList<>();
+    }
+
+    void addCourse(Course course) {
+        courses.add(course);
+    }
+
+    void displayCourses() {
+        System.out.println("Available Courses:");
+        for (Course course : courses) {
+            int availableSlots = course.capacity - course.registeredStudents.size();
+            System.out.println("Code: " + course.code);
+            System.out.println("Title: " + course.title);
+            System.out.println("Description: " + course.description);
+            System.out.println("Available Slots: " + availableSlots);
+            System.out.println("Schedule: " + course.schedule);
+            System.out.println("---------------------------");
+        }
+    }
+
+    void registerStudentForCourse(Student student, Course course) {
+        if (course.registeredStudents.size() < course.capacity) {
+            student.registeredCourses.add(course);
+            course.registeredStudents.add(student);
+            System.out.println(student.name + " registered for " + course.title);
+        } else {
+            System.out.println("Sorry, " + course.title + " is full. Cannot register " + student.name);
+        }
+    }
+
+    void removeStudentFromCourse(Student student, Course course) {
+        if (course.registeredStudents.contains(student)) {
+            student.registeredCourses.remove(course);
+            course.registeredStudents.remove(student);
+            System.out.println(student.name + " removed from " + course.title);
+        } else {
+            System.out.println(student.name + " is not registered for " + course.title);
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        CourseManager courseManager = new CourseManager();
+
+        Course course1 = new Course("CS101", "Introduction to Computer Science", "Basic programming concepts", 30, "Mon-Wed-Fri, 9:00 AM");
+        Course course2 = new Course("MATH201", "Calculus I", "Limits, derivatives, and integrals", 25, "Tue-Thu, 10:30 AM");
+        Course course3 = new Course("PHY301", "Physics Mechanics", "Classical mechanics and motion", 35, "Mon-Wed-Fri, 1:00 PM");
+
+        courseManager.addCourse(course1);
+        courseManager.addCourse(course2);
+        courseManager.addCourse(course3);
+
+        Student student1 = new Student(1, "Alice");
+        Student student2 = new Student(2, "Bob");
+
+        courseManager.displayCourses();
+
+        courseManager.registerStudentForCourse(student1, course1);
+        courseManager.registerStudentForCourse(student1, course2);
+        courseManager.registerStudentForCourse(student2, course1);
+
+        courseManager.removeStudentFromCourse(student1, course2);
+        courseManager.removeStudentFromCourse(student2, course3);
+    }
+}
